@@ -4,3 +4,5 @@ __pycache__/
 
 .coverage.*
 *.blend[0-9]*
+*.blend
+blender-examples/**
