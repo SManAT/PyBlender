@@ -6,11 +6,13 @@ examples of scripts to deal with blender >2.8.
 To see errors and hints have a look at the system console. To do This
 *Window* > *Toggle System Console*
 
-## Some Basics for Beginners
+## Some Basics for Beginners like me
 **bpy.context.scene.collection**
 Scene Master collection
+
 **bpy.data.collections**
 Main data structure and there are all collections
+
 **bpy.ops.collection**
 Collection Operators
 
