@@ -6,6 +6,14 @@ examples of scripts to deal with blender >2.8.
 To see errors and hints have a look at the system console. To do This
 *Window* > *Toggle System Console*
 
+## Some Basics for Beginners
+**bpy.context.scene.collection**
+Scene Master collection
+**bpy.data.collections**
+Main data structure and there are all collections
+**bpy.ops.collection**
+Collection Operators
+
 ## Include Python modules (libraries)
 How to include your own libraries? You have to change the Python SystemPath (i call it).
 ```python
