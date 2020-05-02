@@ -54,9 +54,7 @@ class Vector(object):
     ''' length of the vector '''
     def length(self):
         return math.sqrt(
-            self._koord[0]*self._koord[0] +
-            self._koord[1]*self._koord[1] +
-            self._koord[2]*self._koord[2]
+            self._koord[0]**2 + self._koord[1]**2 + self._koord[2]**2
             )
 
 #-------------------------------------------------------------------------------
@@ -71,46 +69,30 @@ class Vector3D(Vector):
         ''' print out the Vector '''
         self._output(3)
 
-    def add(self, v2):
+    def add(self, v):
         """ 3D Vector Add """
-        self._koord[0] += v2.getX()
-        self._koord[1] += v2.getY()
-        self._koord[2] += v2.getZ()
+        self._koord[0] += v.getX()
+        self._koord[1] += v.getY()
+        self._koord[2] += v.getZ()
 
-#-------------------------------------------------------------------------------
-
-''' represents a 2D Vector '''
-class Vector2D(Vector):
-    def __init__(self, x, y):
-        self._koord = [x,y,0]
-        self._name = "vec"
-
-    def createVector(self, P1, P2):
-        '''
-        create a vector between 2 Points, P2 -P1
-        Point = Array e.g. [2,-4]
-        '''
-        self._koord[0] = P2[0] - P1[0]
-        self._koord[1] = P2[1] - P1[1]
-
-    def output(self):
-        ''' print out the Vector '''
-        self._output(2)
-
-    def add(self, v2):
-        """ 2D Vector Add """
-        self._koord[0] += v2.getX()
-        self._koord[1] += v2.getY()
-
-    def sub(self, v2):
-        """ 2D Vector Sub """
-        self._koord[0] -= v2.getX()
-        self._koord[1] -= v2.getY()
+    def sub(self, v):
+        """ 3D Vector Subtraction """
+        self._koord[0] -= v.getX()
+        self._koord[1] -= v.getY()
+        self._koord[2] -= v.getZ()
 
     def scalar(self, k):
-        """ 2D Vector multiply with scalar """
+        """ 3D Vector multiply with an scalar """
         self._koord[0] *= k
         self._koord[1] *= k
+        self._koord[2] *= k
+
+    def multiply(self, v):
+        return self.scalarProduct(v)
+
+    def scalarProduct(self, v):
+        """ 3D Vector Multiplication """
+        return self._koord[0] * v.getX() + self._koord[1] * v.getY() + self._koord[2] * v.getZ()
 
     def length(self):
         """ get length of vector """
@@ -121,12 +103,26 @@ class Vector2D(Vector):
         l = self.length()
         self.scalar(1/l)
 
-    def scalarProduct(self, v):
-        """ calculate the scalar Product """
-        return self._koord[0] * v.getX() + self._koord[1] * v.getY()
+    def exProduct(self, v):
+        """ calculates the exproduct an return a new Vector """
+        ex = Vector3D(0,0,0)
+        x = self.getY() * v.getZ() - self.getZ() * v.getY()
+        y = self.getZ() * v.getX() - self.getX() * v.getZ()
+        z = self.getX() * v.getY() - self.getY() * v.getX()
+        ex.setX(x)
+        ex.setY(y)
+        ex.setZ(z)
+        return ex
 
+        
+    def Tests(self):
+        ''' some Tests '''
+        #Tests
+        v1 = Vector3D(1,2,3)
+        v2 = Vector3D(-7,8,9)
 
-    def getAngle(self, v):
-        """ get the angle from vector between self and v """
-        c = self.scalarProduct(v) / self.length() / v.length()
-        return math.acos(c)*180/math.pi
+        v1.output()
+        v2.output()
+
+        v3 = v1.exProduct(v2)
+        v3.output()
