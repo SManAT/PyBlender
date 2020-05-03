@@ -170,16 +170,33 @@ class LSystem3D:
         z = matrix[2][0] * v.getX() + matrix[2][1] * v.getY() + matrix[2][2] * v.getZ()
         return Vector3D(x, y, z)
 
-    def rotateAlongH(self, alpha):
+    def rotate_around_H(self, alpha):
         ''' rotates along the Head Vector '''
         matrix = self.__rotateMatrix(alpha, self._H)
         Up = self.__matrixMulVector(matrix, self._U)
         Left = self.__matrixMulVector(matrix, self._L)
-        Up.output()
-        Left.output()
+        self._U = Up
+        self._L = Left
 
+    def rotate_around_U(self, alpha):
+        ''' rotates along the Up Vector '''
+        matrix = self.__rotateMatrix(alpha, self._U)
+        Heading = self.__matrixMulVector(matrix, self._H)
+        Left = self.__matrixMulVector(matrix, self._L)
+        self._H = Heading
+        self._L = Left
 
-LSys = LSystem3D()
-LSys.output()
+    def rotate_around_L(self, alpha):
+        ''' rotates along the L Vector '''
+        matrix = self.__rotateMatrix(alpha, self._L)
+        Up = self.__matrixMulVector(matrix, self._U)
+        Heading = self.__matrixMulVector(matrix, self._H)
+        self._U = Up
+        self._H = Heading
 
-LSys.rotateAlongH(30)
+    def Test(self):
+        ''' some Testing  '''
+        LSys = LSystem3D()
+        LSys.output()
+        LSys.rotate_around_H(30)
+        LSys.output()
