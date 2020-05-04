@@ -38,7 +38,7 @@ print(sys.path)
 
 # Lindenmayer System in 3D
 Use the lib LSystem3D.py. The turtel has the following vectors in 3D
-![turtle](/img/3DVektoren.png  "Axis"){:style="float: right;margin-right: 7px;margin-top: 7px;"}
+![turtle](/img/turtle.png  "Axis")
 
 
 
