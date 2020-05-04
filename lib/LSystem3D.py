@@ -20,12 +20,12 @@ from Vector3D import Vector3D
 Represents a Turtel System for a 3D Lindenmayer System
 '''
 class LSystem3D:
-    axiom=""
-    regeln = []
+    _axiom=""
+    _regeln = []
+    _code=[]
+    _alphabet=""
 
-    code=[]
-    length=100;
-    alphabet=""
+    __vectorlist=[]
 
     def __init__(self):
         #Heading Vector along x Axis
@@ -42,7 +42,11 @@ class LSystem3D:
         self._H.setName("Pos")
         #initial rotation angle
         self._alpha=90
-        pass
+        #initial length of moving forward
+        self._length = 100
+
+        #store the first point
+        self.__vectorlist.append(self._Pos)
 
     ''' a rule is added '''
     def addRegel(self, regel):
@@ -59,7 +63,7 @@ class LSystem3D:
     ''' checks if an character is from alphabet '''
     def is_Alphabet(self, char):
         found = False
-        for aChar in self.alphabet:
+        for aChar in self._alphabet:
             if aChar==char:
                 found=True
         return found
@@ -87,25 +91,33 @@ class LSystem3D:
                 self.output(code)
 
         print("Fertiger Code: %s" % (self.getFinalCode(code)))
-        self.code = code
+        self._code = code
         st()
 
     ''' calculate the 3D Points '''
     def draw(self):
-        for char in self.code:
+        for char in self._code:
             if char=="F":
-                forward(self.length)
+                #add tp point H vector
+                self._Pos.add(self._H)
+                #otherwise only references are stored!
+                v = self._Pos.createNewVectorObject(self._Pos)
+                self.__vectorlist.append(v)
 
             elif char=="+":
-                left(self.alpha)
+                #left(self.alpha)
+                pass
 
             elif char=="-":
-                right(self.alpha)
+                #right(self.alpha)
+                pass
 
             elif char=="f":
-                pu()
-                forward(self.length)
-                pd()
+                #forward(self._length)
+                pass
+            elif char=="&":
+                self.rotate_around_L(self._alpha)
+
             else:
                 #check if constant or alphabet
                 if self.is_Alphabet(char):
@@ -113,10 +125,18 @@ class LSystem3D:
                     pass
                 else:
                     #wird wie F behandelt
-                    forward(self.length)
+                    #forward(self._length)
+                    pass
 
     def __Vector2String(self, v):
         return "[%s, %s, %s]" % (v.getX(), v.getY(), v.getZ())
+
+    def __printVectorlist(self):
+        ''' for debugging purpose '''
+        print("Vektor List")
+        for v in self.__vectorlist:
+            print("%s" % self.__Vector2String(v))
+        print("-END- Vektor List")
 
 
     def output(self):
@@ -196,7 +216,16 @@ class LSystem3D:
 
     def Test(self):
         ''' some Testing  '''
-        LSys = LSystem3D()
-        LSys.output()
-        LSys.rotate_around_H(30)
-        LSys.output()
+        self.output()
+
+        #Draw a equilateral triangle
+        print("---------------------------------------------------------------")
+        self._alpha = 120
+        self.rotate_around_H(45)
+        self.output()
+        self._code = "F&F&F"
+        self.draw()
+        self.__printVectorlist()
+
+#LSys = LSystem3D()
+#LSys.Test()
