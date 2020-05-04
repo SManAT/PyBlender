@@ -2,6 +2,11 @@
 This is info library for Python Scripts in Blender. I will collect here usefull tipps and
 examples of scripts to deal with blender >2.8.
 
+**Prerequisite**
+```Python
+pip install mathutils
+```
+
 **Where is my Console?**
 To see errors and hints have a look at the system console. To do This
 *Window* > *Toggle System Console*

@@ -15,12 +15,12 @@ libPath = os.path.join(rootPath, "./")
 sys.path.insert(0, libPath)
 
 from Vector3D import Vector3D
+from mathutils import Vector
 
 '''
 Represents a Turtel System for a 3D Lindenmayer System
 '''
 class LSystem3D:
-    _axiom=""
     _regeln = []
     _code=[]
     _alphabet=""
@@ -44,6 +44,7 @@ class LSystem3D:
         self._alpha=90
         #initial length of moving forward
         self._length = 100
+        self._axiom=""
 
         #store the first point
         self.__vectorlist.append(self._Pos)
@@ -95,7 +96,9 @@ class LSystem3D:
         st()
 
     ''' calculate the 3D Points '''
-    def draw(self):
+    def calculatePoints(self):
+        #empty the List
+        del self.__vectorlist[:]
         for char in self._code:
             if char=="F":
                 #add tp point H vector
@@ -103,6 +106,7 @@ class LSystem3D:
                 #otherwise only references are stored!
                 v = self._Pos.createNewVectorObject(self._Pos)
                 self.__vectorlist.append(v)
+                print(len(self.__vectorlist))
 
             elif char=="+":
                 #left(self.alpha)
@@ -116,7 +120,7 @@ class LSystem3D:
                 #forward(self._length)
                 pass
             elif char=="&":
-                self.rotate_around_L(self._alpha)
+                self.rotate_around_L(-self._alpha)
 
             else:
                 #check if constant or alphabet
@@ -129,15 +133,23 @@ class LSystem3D:
                     pass
 
     def __Vector2String(self, v):
+        ''' the Vector as a string '''
         return "[%s, %s, %s]" % (v.getX(), v.getY(), v.getZ())
 
-    def __printVectorlist(self):
+    def printVectorlist(self):
         ''' for debugging purpose '''
         print("Vektor List")
         for v in self.__vectorlist:
-            print("%s" % self.__Vector2String(v))
+            self.printVector(v)
         print("-END- Vektor List")
 
+    def getVectorList(self):
+        ''' get the Vectorlist as a List of Vector((x,y,z)) '''
+        erg = []
+        for v in self.__vectorlist:
+            #convert to mathutils.Vector()
+            erg.append(Vector((v.getX(), v.getY(), v.getZ())))
+        return erg
 
     def output(self):
         ''' print information s '''
@@ -145,6 +157,10 @@ class LSystem3D:
         print("Heading: %s" % self.__Vector2String(self._H))
         print("Up: %s" % self.__Vector2String(self._U))
         print("Left: %s" % self.__Vector2String(self._L))
+
+    def printVector(self, v):
+        ''' prints the Vector3D '''
+        print("%s" % self.__Vector2String(v))
 
 
     def __rotateMatrix(self, alpha, rvec):
@@ -224,8 +240,17 @@ class LSystem3D:
         self.rotate_around_H(45)
         self.output()
         self._code = "F&F&F"
-        self.draw()
-        self.__printVectorlist()
+        self.calculatePoints()
+        self.printVectorlist()
 
-#LSys = LSystem3D()
-#LSys.Test()
+'''
+LSys = LSystem3D()
+LSys._alpha = 120
+LSys.rotate_around_H(45)
+LSys._code = "F&F&F"
+LSys.calculatePoints()
+LSys.printVectorlist()
+'''
+#LSys.printVector(LSys._L)
+#LSys.rotate_around_H(45)
+#LSys.printVector(LSys._L)
