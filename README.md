@@ -35,3 +35,37 @@ sys.path.insert(0, libPath)
 
 print(sys.path)
 ```
+
+## First Test in Blender
+```python
+import bpy
+import os
+import sys
+
+rootPath = os.path.abspath(os.path.join(os.path.dirname(bpy.data.filepath)))
+libPath = os.path.join(rootPath, "../lib")
+sys.path.insert(0, libPath)
+
+from BlenderStuff import BlenderStuff
+from LSystem3D import LSystem3D
+from mathutils import Vector
+
+#Lindenmayer System ----------------------------------
+LSys = LSystem3D()
+#no iterations here, just a test
+LSys._alpha = 120
+LSys.rotate_around_H(45)
+#Draw a equilateral triangle
+LSys._code = "F&F&F"
+
+LSys.calculatePoints()  
+LSys.printVectorlist()
+listOfVectors = LSys.getVectorList()
+
+#Blender Part ---------------------------------------
+BStuff = BlenderStuff()
+coll = "Path"
+BStuff.create_Collection(coll)
+
+BStuff.MakePolyLine("LSysTest", "LSysTest", listOfVectors, coll)
+```
