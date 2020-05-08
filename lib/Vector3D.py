@@ -114,9 +114,9 @@ class Vector3D(Vector):
         ex.setZ(z)
         return ex
 
-    def createNewVectorObject(self,v):
-        ''' creates a new Object from this one '''
-        return Vector3D(v.getX(), v.getY(), v.getZ())
+    def createNewVectorObject(self):
+        ''' creates a new Object from self '''
+        return Vector3D(self.getX(), self.getY(), self.getZ())
 
 
 

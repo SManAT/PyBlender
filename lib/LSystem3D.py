@@ -24,8 +24,12 @@ class LSystem3D:
     _regeln = []
     _code=[]
     _alphabet=""
+    _posStack = []
 
-    __vectorlist=[]
+    #all pollines
+    __polylines=[]
+    #only one line
+    __line=[]
 
     def __init__(self):
         #Heading Vector along x Axis
@@ -46,12 +50,18 @@ class LSystem3D:
         self._length = 100
         self._axiom=""
 
-        #store the first point
-        self.__vectorlist.append(self._Pos)
+    def setAlpha(self, w):
+        self._alpha = w
+
+    def setAxiom(self, a):
+        self._axiom = a
+
+    def setPos(self, x,y,z):
+        self._Pos = Vector3D(x,y,z)
 
     ''' a rule is added '''
     def addRegel(self, regel):
-        self.regeln.append(regel)
+        self._regeln.append(regel)
 
     ''' remove the alphabet '''
     def getFinalCode(self, code):
@@ -60,6 +70,10 @@ class LSystem3D:
             if self.is_Alphabet(char)==False:
                 erg += char
         return erg
+
+    ''' Prints the final LSystem without Alphabet '''
+    def printFinalCode(self):
+        print("Final Code: %s" % self.getFinalCode(self._code))
 
     ''' checks if an character is from alphabet '''
     def is_Alphabet(self, char):
@@ -71,16 +85,15 @@ class LSystem3D:
 
     ''' iterate '''
     def iterate(self, iterationen):
-        ht()
-        code = self.axiom
+        code = self._axiom
         if iterationen>0:
             for i in range(iterationen):
                 new_code = ""
                 for c in code:
                     #Regeln durcharbeiten
                     replaced=False
-                    for k in range(len(self.regeln)):
-                        item = self.regeln[k]
+                    for k in range(len(self._regeln)):
+                        item = self._regeln[k]
                         if c==item[0]:
                             new_code += item[1]
                             replaced=True
@@ -89,24 +102,53 @@ class LSystem3D:
                         new_code += c
 
                 code = new_code
-                self.output(code)
 
         print("Fertiger Code: %s" % (self.getFinalCode(code)))
         self._code = code
-        st()
 
-    ''' calculate the 3D Points '''
-    def calculatePoints(self):
+    ''' emptys the List and places the first Point into it '''
+    def clearPolyLines(self):
+        del self.__polylines[:]
+        self.__polylines = []
+        #store the first point
+        self.__line.append(self._Pos)
+
+    ''' clear one single Line data Array '''
+    def clearLine(self):
+        del self.__line[:]
+        self.__line = []
+
+    ''' store the actualPosition to Line Object '''
+    def storePos(self):
+        #otherwise only references are stored!
+        v = self._Pos.createNewVectorObject()
+        self.__line.append(v)
+
+    def appendLine(self):
+        ''' append line object to polylines list '''
+        #if line has only one point, than dismiss
+        if len(self.__line)>1:
+            self.__polylines.append(list(self.__line))
+        #new line
+        self.clearLine()
+
+    '''
+    calculate the 3D Points
+    return: a array of polylines to Draw
+            new polylines are created with
+            ] ... pop from stack
+            f ... dont draw line
+    '''
+    def calculate(self):
         #empty the List
-        del self.__vectorlist[:]
+        self.clearPolyLines()
+        #empty single line Object
+        self.clearLine()
         for char in self._code:
             if char=="F":
                 #add tp point H vector
                 self._Pos.add(self._H)
-                #otherwise only references are stored!
-                v = self._Pos.createNewVectorObject(self._Pos)
-                self.__vectorlist.append(v)
-                print(len(self.__vectorlist))
+                self.storePos()
 
             elif char=="+":
                 #left(self.alpha)
@@ -117,10 +159,43 @@ class LSystem3D:
                 pass
 
             elif char=="f":
-                #forward(self._length)
-                pass
+                #single polyline is done, create a new ones
+                self.appendLine()
+                self._Pos.add(self._H)
+                self.storePos()
+
             elif char=="&":
                 self.rotate_around_L(-self._alpha)
+
+            elif char=="^":
+                self.rotate_around_L(self._alpha)
+
+            elif char=="\\":
+                self.rotate_around_H(self._alpha)
+
+            elif char=="/":
+                self.rotate_around_H(-self._alpha)
+
+            elif char=="|":
+                self.rotate_around_H(180)
+
+            elif char=="[":
+                ''' store the Position and all Vectors '''
+                turtle = Turtle(self._P, self._H, self._U, self._L)
+                self._posStack.append(turtle)
+
+            elif char=="]":
+                ''' get Turtle Data from Stack '''
+                turtle = self._posStack.pop()
+                #create new Objects otherwise only reference is stored
+                self._Pos = turtle.getP().createNewVectorObject()
+                self._H = turtle.getH().createNewVectorObject()
+                self._U = turtle.getU().createNewVectorObject()
+                self._L = turtle.getL().createNewVectorObject()
+
+                #single polyline is done, create a new ones
+                self.appendLine()
+                self.storePos()
 
             else:
                 #check if constant or alphabet
@@ -132,36 +207,51 @@ class LSystem3D:
                     #forward(self._length)
                     pass
 
+        print(self.__line)
+        self.appendLine()
+        print(self.__polylines)
+
     def __Vector2String(self, v):
         ''' the Vector as a string '''
+        print(v)
         return "[%s, %s, %s]" % (v.getX(), v.getY(), v.getZ())
 
-    def printVectorlist(self):
+    def printPolyLines(self):
         ''' for debugging purpose '''
         print("Vektor List")
-        for v in self.__vectorlist:
-            self.printVector(v)
+        for line in self.__polylines:
+            for v in line:
+                self.printVector(v)
         print("-END- Vektor List")
 
-    def getVectorList(self):
-        ''' get the Vectorlist as a List of Vector((x,y,z)) '''
+    def getPolyLines(self):
+        '''
+        get the Vectorlist as a List of Vector((x,y,z))
+        this is needed in Blender to draw the Polyline
+        '''
         erg = []
-        for v in self.__vectorlist:
-            #convert to mathutils.Vector()
-            erg.append(Vector((v.getX(), v.getY(), v.getZ())))
+        single_line = []
+        for line in self.__polylines:
+            del single_line[:]
+            single_line = []
+            for v in line:
+                #convert to mathutils.Vector()
+                single_line.append(Vector((v.getX(), v.getY(), v.getZ())))
+            erg.append(single_line)
         return erg
 
     def output(self):
-        ''' print information s '''
+        ''' print informations '''
         print("Position: %s" % self.__Vector2String(self._Pos))
         print("Heading: %s" % self.__Vector2String(self._H))
         print("Up: %s" % self.__Vector2String(self._U))
         print("Left: %s" % self.__Vector2String(self._L))
+        print("Vectors: %s" % len(self.__polylines))
+        print("Code Length: %s" % len(self._code))
 
     def printVector(self, v):
         ''' prints the Vector3D '''
         print("%s" % self.__Vector2String(v))
-
 
     def __rotateMatrix(self, alpha, rvec):
         '''
@@ -232,25 +322,54 @@ class LSystem3D:
 
     def Test(self):
         ''' some Testing  '''
-        self.output()
-
         #Draw a equilateral triangle
         print("---------------------------------------------------------------")
         self._alpha = 120
         self.rotate_around_H(45)
         self.output()
-        self._code = "F&F&F"
-        self.calculatePoints()
-        self.printVectorlist()
+        self._code = "F&F&FffF&F&F"
+        self._code = "FFffFF"
+        self.calculate()
+        #self.printPolyLines()
+
+#-------------------------------------------------------------------------------
 
 '''
+Stores all data for the Turtle
+Pos, H, L, U etc
+'''
+class Turtle:
+    def __init__(self, P, H, U, L):
+        self.__Pos = P.createNewVectorObject()
+        self.__H = H.createNewVectorObject()
+        self.__U = U.createNewVectorObject()
+        self.__L = L.createNewVectorObject()
+
+    def getH(self):
+        return self.__H
+
+    def getU(self):
+        return self.__U
+
+    def getP(self):
+        return self.__P
+
+    def getL(self):
+        return self.__L
+
 LSys = LSystem3D()
+LSys.Test()
+'''
+
 LSys._alpha = 120
 LSys.rotate_around_H(45)
 LSys._code = "F&F&F"
-LSys.calculatePoints()
-LSys.printVectorlist()
+LSys.calculate()
+LSys.printPolyLines()
+LSys.setPos(0, 0, 0)
+LSys.setAlpha(90)
+LSys.setAxiom("X")
+regel = ["X", "^\XF^\XFX-F^//XFX&F+//XFX-F/X-/"]
+LSys.addRegel(regel)
+LSys.iterate(2)
 '''
-#LSys.printVector(LSys._L)
-#LSys.rotate_around_H(45)
-#LSys.printVector(LSys._L)
