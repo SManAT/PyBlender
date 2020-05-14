@@ -11,7 +11,7 @@ import os
 import sys
 rootPath = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 libPath = os.path.join(rootPath, "./")
-#add libPath to SystemPath
+# add libPath to SystemPath
 sys.path.insert(0, libPath)
 
 from Vector3D import Vector3D
