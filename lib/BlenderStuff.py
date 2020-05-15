@@ -7,9 +7,10 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-
 PO Box 1866, Mountain View, CA 94042, USA.
 """
 
+
 class BlenderStuff:
 	def __init__(self):
-		#protected variables bind to instance
+		# protected variables bind to instance
 		self._myScene = bpy.context.scene
 		self._C = bpy.context
 		self._D = bpy.data
@@ -20,7 +21,7 @@ class BlenderStuff:
 	def remove_Collection(self, col_name):
 		remove_collection_objects = True
 		coll = bpy.data.collections.get(col_name)
-		#found
+		# found
 		if coll:
 			if remove_collection_objects:
 				obs = [o for o in coll.objects if o.users == 1]
@@ -32,7 +33,7 @@ class BlenderStuff:
 	Create new collection and add it to scene
 	'''
 	def create_Collection(self, col_name):
-		#first remove old ones
+		# first remove old ones
 		self.remove_Collection(col_name)
 		collection = self._D.collections.new(name=col_name)
 		# Add collection to scene
@@ -44,18 +45,18 @@ class BlenderStuff:
 	to Collection coll
 	'''
 	def MakePolyLine(self, objname, curvename, cList, coll):
-		#weight
+		# weight
 		w = 1
-		#'POLY', 'BEZIER', 'BSPLINE', 'CARDINAL', 'NURBS'
+		# 'POLY', 'BEZIER', 'BSPLINE', 'CARDINAL', 'NURBS'
 		curvedata = self._D.curves.new(name=curvename, type='CURVE')
 		curvedata.dimensions = '3D'
 
 		objectdata = self._D.objects.new(objname, curvedata)
-		#object origin
-		objectdata.location = (0,0,0)
+		# object origin
+		objectdata.location = (0, 0, 0)
 
 		polyline = curvedata.splines.new('POLY')
-		polyline.points.add(len(cList)-1)
+		polyline.points.add(len(cList) - 1)
 		for num in range(len(cList)):
 			x, y, z = cList[num]
 			polyline.points[num].co = (x, y, z, w)

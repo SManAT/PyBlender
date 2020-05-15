@@ -17,38 +17,39 @@ sys.path.insert(0, libPath)
 from Vector3D import Vector3D
 from mathutils import Vector
 
-'''
-Represents a Turtel System for a 3D Lindenmayer System
-'''
+
 class LSystem3D:
+    '''
+    Represents a Turtel System for a 3D Lindenmayer System
+    '''
     _regeln = []
-    _code=[]
-    _alphabet=""
+    _code = []
+    _alphabet = ""
     _posStack = []
 
-    #all pollines
-    __polylines=[]
-    #only one line
-    __line=[]
+    # all pollines
+    __polylines = []
+    # only one line
+    __line = []
 
     def __init__(self):
-        #Heading Vector along x Axis
-        self._H = Vector3D(1,0,0)
+        # Heading Vector along x Axis
+        self._H = Vector3D(1, 0, 0)
         self._H.setName("Heading")
-        #Left Vector along y Axis
+        # Left Vector along y Axis
         self._L = Vector3D(0, 1, 0)
         self._H.setName("Left")
-        #Up Vector along z Axis
+        # Up Vector along z Axis
         self._U = Vector3D(0, 0, 1)
         self._H.setName("Up")
-        #initial Positon = Origin
-        self._Pos = Vector3D(0,0,0)
+        # initial Positon = Origin
+        self._Pos = Vector3D(0, 0, 0)
         self._H.setName("Pos")
-        #initial rotation angle
-        self._alpha=90
-        #initial length of moving forward
+        # initial rotation angle
+        self._alpha = 90
+        # initial length of moving forward
         self._length = 100
-        self._axiom=""
+        self._axiom = ""
 
     def setAlpha(self, w):
         self._alpha = w
@@ -56,8 +57,8 @@ class LSystem3D:
     def setAxiom(self, a):
         self._axiom = a
 
-    def setPos(self, x,y,z):
-        self._Pos = Vector3D(x,y,z)
+    def setPos(self, x, y, z):
+        self._Pos = Vector3D(x, y, z)
 
     ''' a rule is added '''
     def addRegel(self, regel):
@@ -65,9 +66,9 @@ class LSystem3D:
 
     ''' remove the alphabet '''
     def getFinalCode(self, code):
-        erg=""
+        erg = ""
         for char in code:
-            if self.is_Alphabet(char)==False:
+            if self.is_Alphabet(char) is False:
                 erg += char
         return erg
 
@@ -79,26 +80,26 @@ class LSystem3D:
     def is_Alphabet(self, char):
         found = False
         for aChar in self._alphabet:
-            if aChar==char:
-                found=True
+            if aChar == char:
+                found = True
         return found
 
     ''' iterate '''
     def iterate(self, iterationen):
         code = self._axiom
-        if iterationen>0:
+        if iterationen > 0:
             for i in range(iterationen):
                 new_code = ""
                 for c in code:
-                    #Regeln durcharbeiten
-                    replaced=False
+                    # Regeln durcharbeiten
+                    replaced = False
                     for k in range(len(self._regeln)):
                         item = self._regeln[k]
-                        if c==item[0]:
+                        if c == item[0]:
                             new_code += item[1]
-                            replaced=True
-                    if replaced==False:
-                        #Zeichen übernehmen
+                            replaced = True
+                    if replaced is False:
+                        # Zeichen übernehmen
                         new_code += c
 
                 code = new_code
@@ -110,7 +111,7 @@ class LSystem3D:
     def clearPolyLines(self):
         del self.__polylines[:]
         self.__polylines = []
-        #store the first point
+        # store the first point
         self.__line.append(self._Pos)
 
     ''' clear one single Line data Array '''
@@ -120,16 +121,16 @@ class LSystem3D:
 
     ''' store the actualPosition to Line Object '''
     def storePos(self):
-        #otherwise only references are stored!
+        # otherwise only references are stored!
         v = self._Pos.createNewVectorObject()
         self.__line.append(v)
 
     def appendLine(self):
         ''' append line object to polylines list '''
-        #if line has only one point, than dismiss
-        if len(self.__line)>1:
+        # if line has only one point, than dismiss
+        if len(self.__line) > 1:
             self.__polylines.append(list(self.__line))
-        #new line
+        # new line
         self.clearLine()
 
     '''
@@ -140,71 +141,71 @@ class LSystem3D:
             f ... dont draw line
     '''
     def calculate(self):
-        #empty the List
+        # empty the List
         self.clearPolyLines()
-        #empty single line Object
+        # empty single line Object
         self.clearLine()
         for char in self._code:
-            if char=="F":
-                #add tp point H vector
+            if char == "F":
+                # add tp point H vector
                 self._Pos.add(self._H)
                 self.storePos()
 
-            elif char=="+":
-                #left(self.alpha)
+            elif char == "+":
+                # left(self.alpha)
                 pass
 
-            elif char=="-":
-                #right(self.alpha)
+            elif char == "-":
+                # right(self.alpha)
                 pass
 
-            elif char=="f":
-                #single polyline is done, create a new ones
+            elif char == "f":
+                # single polyline is done, create a new ones
                 self.appendLine()
                 self._Pos.add(self._H)
                 self.storePos()
 
-            elif char=="&":
+            elif char == "&":
                 self.rotate_around_L(-self._alpha)
 
-            elif char=="^":
+            elif char == "^":
                 self.rotate_around_L(self._alpha)
 
-            elif char=="\\":
+            elif char == "\\":
                 self.rotate_around_H(self._alpha)
 
-            elif char=="/":
+            elif char == "/":
                 self.rotate_around_H(-self._alpha)
 
-            elif char=="|":
+            elif char == "|":
                 self.rotate_around_H(180)
 
-            elif char=="[":
+            elif char == "[":
                 ''' store the Position and all Vectors '''
                 turtle = Turtle(self._P, self._H, self._U, self._L)
                 self._posStack.append(turtle)
 
-            elif char=="]":
+            elif char == "]":
                 ''' get Turtle Data from Stack '''
                 turtle = self._posStack.pop()
-                #create new Objects otherwise only reference is stored
+                # create new Objects otherwise only reference is stored
                 self._Pos = turtle.getP().createNewVectorObject()
                 self._H = turtle.getH().createNewVectorObject()
                 self._U = turtle.getU().createNewVectorObject()
                 self._L = turtle.getL().createNewVectorObject()
 
-                #single polyline is done, create a new ones
+                # single polyline is done, create a new ones
                 self.appendLine()
                 self.storePos()
 
             else:
-                #check if constant or alphabet
+                # check if constant or alphabet
                 if self.is_Alphabet(char):
-                    #ist im Alphabet > mach nichts
+                    # ist im Alphabet > mach nichts
                     pass
                 else:
-                    #wird wie F behandelt
-                    #forward(self._length)
+                    # wird wie F behandelt
+                    # forward(self._length)
                     pass
 
         print(self.__line)
@@ -235,7 +236,7 @@ class LSystem3D:
             del single_line[:]
             single_line = []
             for v in line:
-                #convert to mathutils.Vector()
+                # convert to mathutils.Vector()
                 single_line.append(Vector((v.getX(), v.getY(), v.getZ())))
             erg.append(single_line)
         return erg
@@ -260,7 +261,7 @@ class LSystem3D:
         :param Vector3D rvec: rotate around this vector
         :return: a matrix
         '''
-        rad_alpha = alpha * math.pi /180
+        rad_alpha = alpha * math.pi / 180
         t = 1 - math.cos(rad_alpha)
         S = math.sin(rad_alpha)
         C = math.cos(rad_alpha)
@@ -269,20 +270,20 @@ class LSystem3D:
         matrix.append([])
         matrix.append([])
 
-        #first Row
-        matrix[0].append( t*rvec.getX()**2 + C )
-        matrix[0].append( t*rvec.getX()*rvec.getY() - S*rvec.getZ() )
-        matrix[0].append( t*rvec.getX()*rvec.getZ() + S*rvec.getY() )
+        # first Row
+        matrix[0].append(t * rvec.getX()**2 + C)
+        matrix[0].append(t * rvec.getX() * rvec.getY() - S * rvec.getZ())
+        matrix[0].append(t * rvec.getX() * rvec.getZ() + S * rvec.getY())
 
-        #second Row
-        matrix[1].append( t*rvec.getX()*rvec.getY() + S*rvec.getZ() )
-        matrix[1].append( t*rvec.getY()**2 + C )
-        matrix[1].append( t*rvec.getY()*rvec.getZ() - S*rvec.getX() )
+        # second Row
+        matrix[1].append(t * rvec.getX() * rvec.getY() + S * rvec.getZ())
+        matrix[1].append(t * rvec.getY()**2 + C)
+        matrix[1].append(t * rvec.getY() * rvec.getZ() - S * rvec.getX())
 
-        #third Row
-        matrix[2].append( t*rvec.getX()*rvec.getZ() - S*rvec.getY() )
-        matrix[2].append( t*rvec.getY()*rvec.getZ() + S*rvec.getX() )
-        matrix[2].append( t*rvec.getZ()**2 + C )
+        # third Row
+        matrix[2].append(t * rvec.getX() * rvec.getZ() - S * rvec.getY())
+        matrix[2].append(t * rvec.getY() * rvec.getZ() + S * rvec.getX())
+        matrix[2].append(t * rvec.getZ()**2 + C)
 
         return matrix
 
@@ -322,7 +323,7 @@ class LSystem3D:
 
     def Test(self):
         ''' some Testing  '''
-        #Draw a equilateral triangle
+        # Draw a equilateral triangle
         print("---------------------------------------------------------------")
         self._alpha = 120
         self.rotate_around_H(45)
@@ -330,15 +331,16 @@ class LSystem3D:
         self._code = "F&F&FffF&F&F"
         self._code = "FFffFF"
         self.calculate()
-        #self.printPolyLines()
+        # self.printPolyLines()
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-'''
-Stores all data for the Turtle
-Pos, H, L, U etc
-'''
+
 class Turtle:
+    '''
+    Stores all data for the Turtle
+    Pos, H, L, U etc
+    '''
     def __init__(self, P, H, U, L):
         self.__Pos = P.createNewVectorObject()
         self.__H = H.createNewVectorObject()
@@ -356,6 +358,7 @@ class Turtle:
 
     def getL(self):
         return self.__L
+
 
 LSys = LSystem3D()
 LSys.Test()

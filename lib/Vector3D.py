@@ -7,15 +7,16 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-
 PO Box 1866, Mountain View, CA 94042, USA.
 """
 
-''' defines a vector '''
-class Vector(object):
-    #hier werden Classen Attribute erstellt
 
-    #imKonstruktor werden Instanz Attribute erstellt
+class Vector(object):
+    ''' defines a vector '''
+    # hier werden Classen Attribute erstellt
+
+    # imKonstruktor werden Instanz Attribute erstellt
     def __init__(self, x, y, z):
-        #A double underscore: Private variable
-        #A single underscore: Protected variable
-        self._koord = [x,y,z]
+        # A double underscore: Private variable
+        # A single underscore: Protected variable
+        self._koord = [x, y, z]
         self._name = "vec"
 
     def getX(self):
@@ -44,25 +45,24 @@ class Vector(object):
 
     ''' print out the Vector '''
     def _output(self, dim):
-        str=""
+        str = ""
         for i in range(0, dim):
             str += "%s, " % self._koord[i]
-        #Delete last Char
+        # Delete last Char
         str = str[:-2]
         print("%s > [%s]" % (self._name, str))
 
     ''' length of the vector '''
     def length(self):
-        return math.sqrt(
-            self._koord[0]**2 + self._koord[1]**2 + self._koord[2]**2
-            )
+        return math.sqrt(self._koord[0]**2 + self._koord[1]**2 + self._koord[2]**2)
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-''' represents a 3D Vector '''
+
 class Vector3D(Vector):
+    ''' represents a 3D Vector '''
     def __init__(self, x, y, z):
-        self._koord = [x,y,z]
+        self._koord = [x, y, z]
         self._name = "vec"
 
     def output(self):
@@ -100,12 +100,12 @@ class Vector3D(Vector):
 
     def unit(self):
         """ make vector length 1 """
-        l = self.length()
-        self.scalar(1/l)
+        length = self.length()
+        self.scalar(1 / length)
 
     def exProduct(self, v):
         """ calculates the exproduct an return a new Vector """
-        ex = Vector3D(0,0,0)
+        ex = Vector3D(0, 0, 0)
         x = self.getY() * v.getZ() - self.getZ() * v.getY()
         y = self.getZ() * v.getX() - self.getX() * v.getZ()
         z = self.getX() * v.getY() - self.getY() * v.getX()
@@ -118,13 +118,11 @@ class Vector3D(Vector):
         ''' creates a new Object from self '''
         return Vector3D(self.getX(), self.getY(), self.getZ())
 
-
-
     def Tests(self):
         ''' some Tests '''
-        #Tests
-        v1 = Vector3D(1,2,3)
-        v2 = Vector3D(-7,8,9)
+        # Tests
+        v1 = Vector3D(1, 2, 3)
+        v2 = Vector3D(-7, 8, 9)
 
         v1.output()
         v2.output()
