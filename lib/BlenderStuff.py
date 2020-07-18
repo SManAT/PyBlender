@@ -40,11 +40,16 @@ class BlenderStuff:
         self._myScene.collection.children.link(collection)
         return collection
 
-    '''
-    creates a PolyLine from a list of 3D Vectors and adds it
-    to Collection coll
-    '''
+    def add_to_Collection(self, col_name, objectdata):
+        """Add something to a collection."""
+        # add it to our specific collection
+        self._D.collections[col_name].objects.link(objectdata)
+
     def MakePolyLine(self, objname, curvename, cList, coll):
+        """
+        Creates a PolyLine from a list of 3D Vectors and adds it
+        to Collection coll
+        """
         # weight
         w = 1
         # 'POLY', 'BEZIER', 'BSPLINE', 'CARDINAL', 'NURBS'

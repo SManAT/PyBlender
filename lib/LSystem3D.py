@@ -19,9 +19,7 @@ from mathutils import Vector
 
 
 class LSystem3D:
-    '''
-    Represents a Turtel System for a 3D Lindenmayer System
-    '''
+    """Represents a Turtel System for a 3D Lindenmayer System"""
     _regeln = []
     _code = []
     _alphabet = ""
@@ -119,27 +117,27 @@ class LSystem3D:
         del self.__line[:]
         self.__line = []
 
-    ''' store the actualPosition to Line Object '''
     def storePos(self):
+        """store the actualPosition to Line Object"""
         # otherwise only references are stored!
         v = self._Pos.createNewVectorObject()
         self.__line.append(v)
 
     def appendLine(self):
-        ''' append line object to polylines list '''
+        """append line object to polylines list"""
         # if line has only one point, than dismiss
         if len(self.__line) > 1:
             self.__polylines.append(list(self.__line))
         # new line
         self.clearLine()
 
-    '''
+    """
     calculate the 3D Points
     return: a array of polylines to Draw
             new polylines are created with
             ] ... pop from stack
             f ... dont draw line
-    '''
+    """
     def calculate(self):
         # empty the List
         self.clearPolyLines()
@@ -213,12 +211,12 @@ class LSystem3D:
         print(self.__polylines)
 
     def __Vector2String(self, v):
-        ''' the Vector as a string '''
+        """the Vector as a string"""
         print(v)
         return "[%s, %s, %s]" % (v.getX(), v.getY(), v.getZ())
 
     def printPolyLines(self):
-        ''' for debugging purpose '''
+        """for debugging purpose"""
         print("Vektor List")
         for line in self.__polylines:
             for v in line:
@@ -226,10 +224,10 @@ class LSystem3D:
         print("-END- Vektor List")
 
     def getPolyLines(self):
-        '''
+        """
         get the Vectorlist as a List of Vector((x,y,z))
         this is needed in Blender to draw the Polyline
-        '''
+        """
         erg = []
         single_line = []
         for line in self.__polylines:
@@ -242,7 +240,7 @@ class LSystem3D:
         return erg
 
     def output(self):
-        ''' print informations '''
+        """print informations"""
         print("Position: %s" % self.__Vector2String(self._Pos))
         print("Heading: %s" % self.__Vector2String(self._H))
         print("Up: %s" % self.__Vector2String(self._U))
@@ -251,16 +249,16 @@ class LSystem3D:
         print("Code Length: %s" % len(self._code))
 
     def printVector(self, v):
-        ''' prints the Vector3D '''
+        """prints the Vector3D"""
         print("%s" % self.__Vector2String(v))
 
     def __rotateMatrix(self, alpha, rvec):
-        '''
+        """
         the main Transformation Matrix to rotate along a vector
         :param double alpha: rotation angle in derees
         :param Vector3D rvec: rotate around this vector
         :return: a matrix
-        '''
+        """
         rad_alpha = alpha * math.pi / 180
         t = 1 - math.cos(rad_alpha)
         S = math.sin(rad_alpha)
@@ -288,17 +286,17 @@ class LSystem3D:
         return matrix
 
     def __matrixMulVector(self, matrix, v):
-        '''
+        """
         multiply 3D Vector with matrix
         :return: a Vector3D
-        '''
+        """
         x = matrix[0][0] * v.getX() + matrix[0][1] * v.getY() + matrix[0][2] * v.getZ()
         y = matrix[1][0] * v.getX() + matrix[1][1] * v.getY() + matrix[1][2] * v.getZ()
         z = matrix[2][0] * v.getX() + matrix[2][1] * v.getY() + matrix[2][2] * v.getZ()
         return Vector3D(x, y, z)
 
     def rotate_around_H(self, alpha):
-        ''' rotates along the Head Vector '''
+        """rotates along the Head Vector"""
         matrix = self.__rotateMatrix(alpha, self._H)
         Up = self.__matrixMulVector(matrix, self._U)
         Left = self.__matrixMulVector(matrix, self._L)
@@ -306,7 +304,7 @@ class LSystem3D:
         self._L = Left
 
     def rotate_around_U(self, alpha):
-        ''' rotates along the Up Vector '''
+        """rotates along the Up Vector"""
         matrix = self.__rotateMatrix(alpha, self._U)
         Heading = self.__matrixMulVector(matrix, self._H)
         Left = self.__matrixMulVector(matrix, self._L)
@@ -314,7 +312,7 @@ class LSystem3D:
         self._L = Left
 
     def rotate_around_L(self, alpha):
-        ''' rotates along the L Vector '''
+        """rotates along the L Vector"""
         matrix = self.__rotateMatrix(alpha, self._L)
         Up = self.__matrixMulVector(matrix, self._U)
         Heading = self.__matrixMulVector(matrix, self._H)
@@ -322,7 +320,7 @@ class LSystem3D:
         self._H = Heading
 
     def Test(self):
-        ''' some Testing  '''
+        """some Testing"""
         # Draw a equilateral triangle
         print("---------------------------------------------------------------")
         self._alpha = 120
@@ -337,26 +335,31 @@ class LSystem3D:
 
 
 class Turtle:
-    '''
+    """
     Stores all data for the Turtle
     Pos, H, L, U etc
-    '''
+    """
     def __init__(self, P, H, U, L):
+        """Initialize all vectors"""
         self.__Pos = P.createNewVectorObject()
         self.__H = H.createNewVectorObject()
         self.__U = U.createNewVectorObject()
         self.__L = L.createNewVectorObject()
 
     def getH(self):
+        """Heading vector"""
         return self.__H
 
     def getU(self):
+        """Up vector"""
         return self.__U
 
     def getP(self):
+        """Position vector"""
         return self.__P
 
     def getL(self):
+        """Left vector"""
         return self.__L
 
 
