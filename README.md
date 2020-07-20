@@ -2,7 +2,17 @@
 This is info library for Python Scripts in Blender. I will collect here usefull tipps and
 examples of scripts to deal with blender >2.8.
 
-**Prerequisite**
+**Python and Blender**
+***Which Python does Blender use?***
+```Python
+import sys
+sys.exec_prefix
+```
+Maybe that is *C:\Program Files\Blender Foundation\Blender 2.82\2.82\python*.
+If you want to use another Version of Python, just delete this folder.
+
+***Using pip***
+
 ```Python
 pip install mathutils
 ```
