@@ -13,9 +13,11 @@ Maybe that is *C:\Program Files\Blender Foundation\Blender 2.82\2.82\python*.
 If you want to use another Version of Python, just delete this folder.
 
 **Using pip**
+Change within a terminal to the python path. Then you can use (Win)
+```
+.\bin\python.exe -m pip
 
-```Python
-pip install mathutils
+.\bin\python.exe -m pip install mathutils
 ```
 
 **Where is my Console?**
