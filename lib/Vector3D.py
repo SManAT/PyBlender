@@ -52,8 +52,8 @@ class Vector(object):
         str = str[:-2]
         print("%s > [%s]" % (self._name, str))
 
-    ''' length of the vector '''
     def length(self):
+        ''' length of the vector '''
         return math.sqrt(self._koord[0]**2 + self._koord[1]**2 + self._koord[2]**2)
 
 # ------------------------------------------------------------------------------

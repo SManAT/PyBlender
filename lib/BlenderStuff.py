@@ -1,5 +1,6 @@
 import bpy
-import os, sys
+import os
+import sys
 
 """
 Mag. Stefan Hagmann 2020

@@ -1,5 +1,8 @@
 # Add a Path to the System Path of Python, relative to your blender File
+import sys
 import os
+import bpy
+
 rootPath = os.path.abspath(os.path.join(os.path.dirname(bpy.data.filepath)))
 libPath = os.path.join(rootPath, "")
 # add libPath to SystemPath
