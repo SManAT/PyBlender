@@ -1,4 +1,5 @@
-import bpy, math
+import bpy
+import math
 
 """
 Mag. Stefan Hagmann 2020
@@ -17,7 +18,7 @@ class Object:
 
         # creating uniq ID
         self._globalCounter = 0
-        
+
     def translate(self, ob, deltax, deltay, deltaz):
         """
         Translate the object ob
@@ -25,10 +26,9 @@ class Object:
         :param deltax: y + deltay
         :param deltax: z + deltaz
         """
-        bpy.data.objects[ob.name].location.x += deltax
-        bpy.data.objects[ob.name].location.y += deltay
-        bpy.data.objects[ob.name].location.z += deltaz
-
+        self._D.objects[ob.name].location.x += deltax
+        self._D.objects[ob.name].location.y += deltay
+        self._D.objects[ob.name].location.z += deltaz
 
     def rotate(self, ob, alpha, axis):
         """
@@ -39,20 +39,38 @@ class Object:
         # set the active object
         self._C.view_layer.objects.active = ob
         if axis.lower() == 'x':
-            bpy.data.objects[ob.name].rotation_euler[0] = math.radians(alpha)
+            self._D.objects[ob.name].rotation_euler[0] = math.radians(alpha)
         if axis.lower() == 'y':
-            bpy.data.objects[ob.name].rotation_euler[1] = math.radians(alpha)
+            self._D.objects[ob.name].rotation_euler[1] = math.radians(alpha)
         if axis.lower() == 'z':
-            bpy.data.objects[ob.name].rotation_euler[2] = math.radians(alpha)
-        
+            self._D.objects[ob.name].rotation_euler[2] = math.radians(alpha)
+
+    def rotateSelected(self, alpha, axis):
+        """
+        Rotate the selected objects
+        :param alpha: alpha in degrees
+        :param axis: the axis, x, y or z Global
+        """
+        # set the active object
+        if axis.lower() == 'x':
+            bpy.ops.transform.rotate(
+                value=math.radians(alpha), orient_axis='X', orient_type='GLOBAL'
+            )
+        if axis.lower() == 'y':
+            bpy.ops.transform.rotate(
+                value=math.radians(alpha), orient_axis='Y', orient_type='GLOBAL'
+            )
+        if axis.lower() == 'z':
+            bpy.ops.transform.rotate(
+                value=math.radians(alpha), orient_axis='Z', orient_type='GLOBAL'
+            )
 
     def scale(self, ob, fact):
         """
         Scale the object ob
-        :param fact: the scale factor 
+        :param fact: the scale factor
         """
-        bpy.data.objects[ob.name].scale = (fact, fact, fact)
-
+        self._D.objects[ob.name].scale = (fact, fact, fact)
 
     def selectObject(self, ob):
         """
@@ -69,13 +87,26 @@ class Object:
         """Select via Name"""
         # Get the object
         ob = self._C.scene.objects[name]
+        objectToSelect = self._D.objects[name]
+        objectToSelect.select_set(True)
+        self._C.view_layer.objects.active = objectToSelect
         return self.selectObject(ob)
+
+    def selectMultipleRegEX(self, pattern):
+        """
+        Select multiple Object per patern
+        e.g. pattern = Cube
+        """
+        # Deselect all objects
+        for o in self._D.objects:
+            if pattern in o.name:
+                o.select_set(True)
 
     def selectObjectinCollection(self, ob, coll):
         """Select object within a Collection via DataID"""
         # Deselect all objects
         self.deselectAll()
-        col = bpy.data.collections.get(coll)
+        col = self._D.collections.get(coll)
         if col:
             for obj in col.objects:
                 ob.select_set(True)
@@ -89,7 +120,7 @@ class Object:
 
     def deselectAll(self):
         """Deselect everything"""
-        for obj in bpy.data.objects:
+        for obj in self._D.objects:
             obj.select_set(False)
 
     def setToOrigin(self, ob):
@@ -103,6 +134,6 @@ class Object:
         if template_ob:
             self._globalCounter += 1
             newname = "%s-%s" % (template_ob.name, self._globalCounter)
-            ob = bpy.data.objects.new(newname, template_ob.data)
+            ob = self._D.objects.new(newname, template_ob.data)
             # ob = template_ob.copy() not a full copy
             return ob
