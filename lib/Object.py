@@ -137,3 +137,17 @@ class Object:
             ob = self._D.objects.new(newname, template_ob.data)
             # ob = template_ob.copy() not a full copy
             return ob
+
+    def getDimensions(self, obj):
+        """ get Dimensions of object """
+        return obj.dimensions
+
+    def getAllAttributes(self, obj):
+        """ get the attributes from the object """
+        attrs = dir(obj)
+        for item in attrs:
+            print(item)
+
+    def getVertices(self, obj):
+        """ get all vertices from the object """
+        return obj.data.vertices
