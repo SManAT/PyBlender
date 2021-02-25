@@ -23,12 +23,27 @@ class Object:
         """
         Translate the object ob
         :param deltax: x + deltax
-        :param deltax: y + deltay
-        :param deltax: z + deltaz
+        :param deltay: y + deltay
+        :param deltaz: z + deltaz
         """
         self._D.objects[ob.name].location.x += deltax
         self._D.objects[ob.name].location.y += deltay
         self._D.objects[ob.name].location.z += deltaz
+        # Update! e.g. to recalculate matrix_world
+        self._C.view_layer.update()
+
+    def translateTo(self, ob, x, y, z):
+        """
+        Translate the object ob
+        :param x: x
+        :param y: y
+        :param z: z
+        """
+        self._D.objects[ob.name].location.x = x
+        self._D.objects[ob.name].location.y = y
+        self._D.objects[ob.name].location.z = z
+        # Update! e.g. to recalculate matrix_world
+        self._C.view_layer.update()
 
     def rotate(self, ob, alpha, axis):
         """
@@ -44,6 +59,8 @@ class Object:
             self._D.objects[ob.name].rotation_euler[1] = math.radians(alpha)
         if axis.lower() == 'z':
             self._D.objects[ob.name].rotation_euler[2] = math.radians(alpha)
+        # Update! e.g. to recalculate matrix_world
+        self._C.view_layer.update()
 
     def rotateSelected(self, alpha, axis):
         """
@@ -64,6 +81,8 @@ class Object:
             bpy.ops.transform.rotate(
                 value=math.radians(alpha), orient_axis='Z', orient_type='GLOBAL'
             )
+        # Update! e.g. to recalculate matrix_world
+        self._C.view_layer.update()
 
     def scale(self, ob, fact):
         """
@@ -71,6 +90,8 @@ class Object:
         :param fact: the scale factor
         """
         self._D.objects[ob.name].scale = (fact, fact, fact)
+        # Update! e.g. to recalculate matrix_world
+        self._C.view_layer.update()
 
     def selectObject(self, ob):
         """
@@ -91,6 +112,14 @@ class Object:
         objectToSelect.select_set(True)
         self._C.view_layer.objects.active = objectToSelect
         return self.selectObject(ob)
+
+    def delete(self, obj):
+        """ Delete an Object """
+        self._D.objects.remove(obj, do_unlink=True)
+
+    def getActive(self):
+        """ get back active Object """
+        return self._C.view_layer.objects.active
 
     def selectMultipleRegEX(self, pattern):
         """
@@ -128,13 +157,15 @@ class Object:
         self.selectObject(ob)
         ob.location = (0.0, 0.0, 0.0)
 
-    def duplicate(self, ob):
+    def duplicate(self, name):
         """makes a deep copy of the object"""
-        template_ob = self.selectObjectByName(ob)
+        template_ob = self.selectObjectByName(name)
         if template_ob:
             self._globalCounter += 1
             newname = "%s-%s" % (template_ob.name, self._globalCounter)
             ob = self._D.objects.new(newname, template_ob.data)
+            # copy the date
+            ob.data = template_ob.data.copy()
             # ob = template_ob.copy() not a full copy
             return ob
 
@@ -151,3 +182,9 @@ class Object:
     def getVertices(self, obj):
         """ get all vertices from the object """
         return obj.data.vertices
+
+    def getWorldCoordinates(self, obj, vertex):
+        """ get World Coordinates of a vertex """
+        # vertex.co  -> local vertex coordinate
+        # global vertex coordinates
+        return obj.matrix_world @ vertex.co
