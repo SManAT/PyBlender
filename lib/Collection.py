@@ -9,11 +9,6 @@ PO Box 1866, Mountain View, CA 94042, USA.
 
 
 class Collection:
-    def __init__(self):
-        # protected variables bind to instance
-        self._scene = bpy.context.scene
-        self._C = bpy.context
-        self._D = bpy.data
 
     def remove_Collection(self, col_name):
         """Search and remove collection"""
@@ -31,24 +26,24 @@ class Collection:
         """Create new collection and add it to scene"""
         # first remove old ones
         self.remove_Collection(col_name)
-        collection = self._D.collections.new(name=col_name)
+        collection = bpy.data.collections.new(name=col_name)
         # Add collection to scene
-        self._scene.collection.children.link(collection)
+        bpy.context.scene.collection.children.link(collection)
         return collection
 
     def add_to_Collection(self, objectdata, col_name):
         """Add something to a collection."""
-        self._D.collections[col_name].objects.link(objectdata)
+        bpy.data.collections[col_name].objects.link(objectdata)
 
     def remove_from_Collection(self, objectdata, col_name):
         """Remove something from a collection."""
-        self._D.collections[col_name].objects.unlink(objectdata)
+        bpy.data.collections[col_name].objects.unlink(objectdata)
 
     def move_to_Collection(self, obj, col1, col2):
         """Move Object from col1 to col2"""
         # put the obj in the new collection
-        c1 = self._D.collections[col1]
-        c2 = self._D.collections[col2]
+        c1 = bpy.data.collections[col1]
+        c2 = bpy.data.collections[col2]
         c2.objects.link(obj)
         # remove it from the old collection
         c1.objects.unlink(obj)
