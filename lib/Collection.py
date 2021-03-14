@@ -48,10 +48,15 @@ class Collection:
         # remove it from the old collection
         c1.objects.unlink(obj)
 
-    def get_obj_collection(name):
+    def get_obj_collection(self, name):
         """determin collection in where the obj is"""
         item = bpy.data.objects[name]
         collections = item.users_collection
         if len(collections) > 0:
             return collections[0]
         return bpy.contex.scene.collection
+
+    def selectAllInCollection(self, name):
+        """ select all Objects within a collection """
+        for obj in bpy.data.collections[name].all_objects:
+            obj.select_set(True)
