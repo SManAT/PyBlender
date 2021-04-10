@@ -121,6 +121,10 @@ class Object:
         """ get back active Object """
         return self._C.view_layer.objects.active
 
+    def setActive(self, obj):
+        """ sets active Object """
+        self._C.view_layer.objects.active = obj
+
     def selectMultipleRegEX(self, pattern):
         """
         Select multiple Object per patern
