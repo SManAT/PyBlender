@@ -180,8 +180,12 @@ class Object:
     def getAllAttributes(self, obj):
         """ get the attributes from the object """
         attrs = dir(obj)
-        for item in attrs:
-            print(item)
+        for key in attrs:
+            try:
+                value = getattr(object, key)
+                print("%s, %s" % (key, value))
+            except Exception:
+                print(key)
 
     def getVertices(self, obj):
         """ get all vertices from the object """
