@@ -35,18 +35,23 @@ Main data structure and there are all collections
 Collection Operators
 
 ## Include Python modules (libraries)
-How to include your own libraries? You have to change the Python SystemPath (i call it).
+How to include your own libraries? You have to change the Python SystemPath (i call it).  
+E.q. you have your Modules in a subpath called `subdir`.  
 ```python
 import sys
 sys.exec_prefix
 
 import os
-rootPath = os.path.abspath(os.path.join(os.path.dirname(__file__)))
-libPath = os.path.join(rootPath, "test.py")
+import bpy
+# get the Directory-Part from the path to the Blender File
+rootPath = os.path.abspath(os.path.join(os.path.dirname(bpy.data.filepath)))
+libPath = os.path.join(rootPath, "subdir")
 #add libPath to SystemPath
 sys.path.insert(0, libPath)
 
 print(sys.path)
+# now you can import your own modules, e.q.
+import myClass
 ```
 
 # Lindenmayer System in 3D
