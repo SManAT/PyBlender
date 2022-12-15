@@ -54,6 +54,43 @@ print(sys.path)
 import myClass
 ```
 
+# Basic Example
+```
+import math
+import sys
+import os
+import bpy
+
+rootPath = os.path.abspath(os.path.join(os.path.dirname(bpy.data.filepath)))
+libPath = os.path.join(rootPath, "../libs")
+sys.path.insert(0, libPath)
+
+from Collection import Collection
+from BlenderStuff import BlenderStuff
+from Object import Object
+
+# variables
+myScene = bpy.context.scene
+C = bpy.context
+D = bpy.data
+
+
+# Main Program =================================================================
+output_collection = "Output"
+BStuff = BlenderStuff()
+_Collection = Collection()
+_Object = Object()
+# delete if exists and create it new
+_Collection.create_Collection(output_collection)
+
+"""Main Entry Point"""
+
+# 2Do
+
+bpy.ops.wm.save_as_mainfile(filepath="pysaved.blend")
+
+```
+
 # Lindenmayer System in 3D
 Use the lib LSystem3D.py.
 The turtel has the following vectors in 3D
