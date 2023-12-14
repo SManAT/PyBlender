@@ -60,3 +60,7 @@ class Collection:
         """ select all Objects within a collection """
         for obj in bpy.data.collections[name].all_objects:
             obj.select_set(True)
+
+    def setActiveCollection(self, name):
+      """ set the active used collection """
+      bpy.context.view_layer.active_layer_collection = bpy.context.view_layer.layer_collection.children[name]
