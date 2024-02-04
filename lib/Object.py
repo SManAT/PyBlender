@@ -93,6 +93,15 @@ class Object:
         # Update! e.g. to recalculate matrix_world
         self._C.view_layer.update()
 
+    def scale(self, ob, x, y, z):
+        """
+        Scale the object ob
+        :param fact: the scale factor
+        """
+        self._D.objects[ob.name].scale = (x, y, z)
+        # Update! e.g. to recalculate matrix_world
+        self._C.view_layer.update()
+
     def selectObject(self, ob):
         """
         Select via DataID
