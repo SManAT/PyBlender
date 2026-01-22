@@ -115,9 +115,9 @@ import bpy
 import os
 import sys
 
-rootPath = os.path.abspath(os.path.join(os.path.dirname(bpy.data.filepath)))
-libPath = os.path.join(rootPath, "../lib")
-sys.path.insert(0, libPath)
+script_paths = bpy.utils.script_paths()
+lib_path = os.path.join(os.path.dirname(bpy.data.filepath), "libs")
+script_paths.append(lib_path)
 
 from BlenderStuff import BlenderStuff
 from LSystem3D import LSystem3D

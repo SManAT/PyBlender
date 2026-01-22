@@ -9,9 +9,10 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-
 PO Box 1866, Mountain View, CA 94042, USA.
 """
 
-rootPath = os.path.abspath(os.path.join(os.path.dirname(bpy.data.filepath)))
-libPath = os.path.join(rootPath, ".")
-sys.path.insert(0, libPath)
+# Use the same Dir as Lib Dir
+script_paths = bpy.utils.script_paths()
+lib_path = os.path.join(os.path.dirname(bpy.data.filepath), ".")
+script_paths.append(lib_path)
 
 from Object import Object
 from Collection import Collection
@@ -26,6 +27,15 @@ class BlenderStuff:
 
         self._object = Object()
         self._collection = Collection()
+        
+        self.show_system_console()
+
+    def show_system_console():
+      """ Show up the System Console """
+      # Check if the system console is visible
+      for area in bpy.context.screen.areas:
+          if area.type != 'CONSOLE':
+              bpy.ops.wm.console_toggle()
 
     def MakePolyLine(self, objname, curvename, cList, coll):
         """

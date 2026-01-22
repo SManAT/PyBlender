@@ -3,8 +3,7 @@ import sys
 import os
 import bpy
 
-rootPath = os.path.abspath(os.path.join(os.path.dirname(bpy.data.filepath)))
-libPath = os.path.join(rootPath, "")
-# add libPath to SystemPath
-sys.path.insert(0, libPath)
-print(sys.path)
+script_paths = bpy.utils.script_paths()
+lib_path = os.path.join(os.path.dirname(bpy.data.filepath), "libs")
+script_paths.append(lib_path)
+
