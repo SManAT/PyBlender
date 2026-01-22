@@ -1,19 +1,23 @@
 # PyBlender
+
 This is info library for Python Scripts in Blender. I will collect here usefull tipps and
 examples of scripts to deal with blender >2.8.
 
 ## Python and Blender
 
 **Which Python does Blender use?**
+
 ```Python
 import sys
 sys.exec_prefix
 ```
-Maybe that is *C:\Program Files\Blender Foundation\Blender 2.82\2.82\python*.
+
+Maybe that is _C:\Program Files\Blender Foundation\Blender 2.82\2.82\python_.
 If you want to use another Version of Python, just delete this folder.
 
 **Using pip**
 Change within a terminal to the python path. Then you can use (Win)
+
 ```
 .\bin\python.exe -m pip
 
@@ -22,9 +26,10 @@ Change within a terminal to the python path. Then you can use (Win)
 
 **Where is my Console?**
 To see errors and hints have a look at the system console. To do This
-*Window* > *Toggle System Console*
+_Window_ > _Toggle System Console_
 
 ## Some Basics for Beginners like me
+
 **bpy.context.scene.collection**
 Scene Master collection
 
@@ -35,35 +40,40 @@ Main data structure and there are all collections
 Collection Operators
 
 ## Include Python modules (libraries)
-How to include your own libraries? You have to change the Python SystemPath (i call it).  
-E.q. you have your Modules in a subpath called `subdir`.  
+
+How to include your own libraries?
+Example Structure
+
+```
+Main.blend
+libs/
+├─ Library.py
+```
+
+With this structure you can do something like that
+
 ```python
-import sys
-sys.exec_prefix
+# Get the list of script paths
+script_paths = bpy.utils.script_paths()
+# Add your library path to the list
+lib_path = os.path.join(os.path.dirname(bpy.data.filepath), "libs")
+script_paths.append(lib_path)
 
-import os
-import bpy
-# get the Directory-Part from the path to the Blender File
-rootPath = os.path.abspath(os.path.join(os.path.dirname(bpy.data.filepath)))
-libPath = os.path.join(rootPath, "subdir")
-#add libPath to SystemPath
-sys.path.insert(0, libPath)
-
-print(sys.path)
 # now you can import your own modules, e.q.
-import myClass
+import Library
 ```
 
 # Basic Example
+
 ```
 import math
 import sys
 import os
 import bpy
 
-rootPath = os.path.abspath(os.path.join(os.path.dirname(bpy.data.filepath)))
-libPath = os.path.join(rootPath, "../libs")
-sys.path.insert(0, libPath)
+script_paths = bpy.utils.script_paths()
+lib_path = os.path.join(os.path.dirname(bpy.data.filepath), "libs")
+script_paths.append(lib_path)
 
 from Collection import Collection
 from BlenderStuff import BlenderStuff
@@ -92,14 +102,14 @@ bpy.ops.wm.save_as_mainfile(filepath="pysaved.blend")
 ```
 
 # Lindenmayer System in 3D
+
 Use the lib LSystem3D.py.
 The turtel has the following vectors in 3D
 
-![turtle](/img/turtle.png  "Axis")
-
-
+![turtle](/img/turtle.png "Axis")
 
 ## First Test in Blender
+
 ```python
 import bpy
 import os
@@ -121,7 +131,7 @@ LSys.rotate_around_H(45)
 #Draw a equilateral triangle
 LSys._code = "F&F&F"
 
-LSys.calculatePoints()  
+LSys.calculatePoints()
 LSys.printVectorlist()
 listOfVectors = LSys.getVectorList()
 
