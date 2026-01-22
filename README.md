@@ -109,6 +109,13 @@ bpy.ops.wm.save_as_mainfile(filepath="pysaved.blend")
 
 ```
 
+# Running a external Script
+
+```python
+filename = os.path.join(os.path.dirname(bpy.data.filepath), "MyScript.py")
+exec(compile(open(filename).read(), filename, 'exec'))
+```
+
 # Lindenmayer System in 3D
 
 Use the lib LSystem3D.py.
