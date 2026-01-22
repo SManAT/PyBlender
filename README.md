@@ -53,11 +53,14 @@ libs/
 With this structure you can do something like that
 
 ```python
-# Get the list of script paths
-script_paths = bpy.utils.script_paths()
-# Add your library path to the list
-lib_path = os.path.join(os.path.dirname(bpy.data.filepath), "libs")
-script_paths.append(lib_path)
+# Get the path to the current Blender file
+blend_file_path = bpy.data.filepath
+
+# Construct the path to the libs directory
+lib_path = os.path.join(os.path.dirname(blend_file_path), "libs")
+
+# Add the libs directory to the system path
+sys.path.append(lib_path)
 
 # now you can import your own modules, e.q.
 import Library
@@ -71,9 +74,14 @@ import sys
 import os
 import bpy
 
-script_paths = bpy.utils.script_paths()
-lib_path = os.path.join(os.path.dirname(bpy.data.filepath), "libs")
-script_paths.append(lib_path)
+# Get the path to the current Blender file
+blend_file_path = bpy.data.filepath
+
+# Construct the path to the libs directory
+lib_path = os.path.join(os.path.dirname(blend_file_path), "libs")
+
+# Add the libs directory to the system path
+sys.path.append(lib_path)
 
 from Collection import Collection
 from BlenderStuff import BlenderStuff
@@ -115,9 +123,14 @@ import bpy
 import os
 import sys
 
-script_paths = bpy.utils.script_paths()
-lib_path = os.path.join(os.path.dirname(bpy.data.filepath), "libs")
-script_paths.append(lib_path)
+# Get the path to the current Blender file
+blend_file_path = bpy.data.filepath
+
+# Construct the path to the libs directory
+lib_path = os.path.join(os.path.dirname(blend_file_path), "libs")
+
+# Add the libs directory to the system path
+sys.path.append(lib_path)
 
 from BlenderStuff import BlenderStuff
 from LSystem3D import LSystem3D

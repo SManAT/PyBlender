@@ -10,9 +10,9 @@ PO Box 1866, Mountain View, CA 94042, USA.
 """
 
 # Use the same Dir as Lib Dir
-script_paths = bpy.utils.script_paths()
-lib_path = os.path.join(os.path.dirname(bpy.data.filepath), ".")
-script_paths.append(lib_path)
+blend_file_path = bpy.data.filepath
+lib_path = os.path.join(os.path.dirname(blend_file_path), ".")
+sys.path.append(lib_path)
 
 from Object import Object
 from Collection import Collection
