@@ -1,19 +1,22 @@
 # PyBlender
+
 This is info library for Python Scripts in Blender. I will collect here usefull tipps and
 examples of scripts to deal with blender >2.8.
 
 ## Python and Blender
 
 **Which Python does Blender use?**
+
 ```Python
 import sys
 sys.exec_prefix
 ```
-Maybe that is *C:\Program Files\Blender Foundation\Blender 2.82\2.82\python*.
-If you want to use another Version of Python, just delete this folder.
+
+Maybe that is _C:\Program Files\Blender Foundation\Blender 2.82\2.82\python_, or similar to your blender version.
 
 **Using pip**
 Change within a terminal to the python path. Then you can use (Win)
+
 ```
 .\bin\python.exe -m pip
 
@@ -22,9 +25,10 @@ Change within a terminal to the python path. Then you can use (Win)
 
 **Where is my Console?**
 To see errors and hints have a look at the system console. To do This
-*Window* > *Toggle System Console*
+_Window_ > _Toggle System Console_
 
 ## Some Basics for Beginners like me
+
 **bpy.context.scene.collection**
 Scene Master collection
 
@@ -35,35 +39,57 @@ Main data structure and there are all collections
 Collection Operators
 
 ## Include Python modules (libraries)
-How to include your own libraries? You have to change the Python SystemPath (i call it).  
-E.q. you have your Modules in a subpath called `subdir`.  
-```python
-import sys
-sys.exec_prefix
 
-import os
-import bpy
-# get the Directory-Part from the path to the Blender File
-rootPath = os.path.abspath(os.path.join(os.path.dirname(bpy.data.filepath)))
-libPath = os.path.join(rootPath, "subdir")
-#add libPath to SystemPath
-sys.path.insert(0, libPath)
+How to include your own libraries?
+Example Structure
 
-print(sys.path)
-# now you can import your own modules, e.q.
-import myClass
+```
+Main.blend
+libs/
+├─ Library.py
 ```
 
+With this structure you can do something like that.
+
+```python
+import bpy
+import os
+import sys
+# Get the path to the current Blender file
+blend_file_path = bpy.data.filepath
+
+# Construct the path to the libs directory
+lib_path = os.path.join(os.path.dirname(blend_file_path), "libs")
+
+# Add the libs directory to the system path
+sys.path.append(lib_path)
+
+# now you can import your own modules, e.q.
+import Library
+```
+
+# System Console for python
+
+On Windows use Menu -> Window -> Toggle System Console.  
+On Linux, just start blender from CLI.
+
 # Basic Example
+
 ```
 import math
 import sys
 import os
 import bpy
 
-rootPath = os.path.abspath(os.path.join(os.path.dirname(bpy.data.filepath)))
-libPath = os.path.join(rootPath, "../libs")
-sys.path.insert(0, libPath)
+# Get the path to the current Blender file
+blend_file_path = bpy.data.filepath
+
+# Construct the path to the libs directory
+lib_path = os.path.join(os.path.dirname(blend_file_path), "libs")
+
+# Add the libs directory to the system path
+if lib_path not in sys.path:
+    sys.path.append(lib_path)
 
 from Collection import Collection
 from BlenderStuff import BlenderStuff
@@ -78,12 +104,19 @@ D = bpy.data
 # Main Program =================================================================
 output_collection = "Output"
 BStuff = BlenderStuff()
+
 _Collection = Collection()
 _Object = Object()
 # delete if exists and create it new
 _Collection.create_Collection(output_collection)
+_Collection.setActiveCollection(output_collection)
+
 
 """Main Entry Point"""
+# Say you have an Mesh MyCube
+new_ob = _Object.duplicate("MyCube")
+_Collection.add_to_Collection(new_ob, output_collection)
+selected_ob = _Object.selectObjectByName(new_ob.name)
 
 # 2Do
 
@@ -91,23 +124,35 @@ bpy.ops.wm.save_as_mainfile(filepath="pysaved.blend")
 
 ```
 
+# Running a external Script
+
+```python
+filename = os.path.join(os.path.dirname(bpy.data.filepath), "MyScript.py")
+exec(compile(open(filename).read(), filename, 'exec'))
+```
+
 # Lindenmayer System in 3D
+
 Use the lib LSystem3D.py.
 The turtel has the following vectors in 3D
 
-![turtle](/img/turtle.png  "Axis")
-
-
+![turtle](/img/turtle.png "Axis")
 
 ## First Test in Blender
+
 ```python
 import bpy
 import os
 import sys
 
-rootPath = os.path.abspath(os.path.join(os.path.dirname(bpy.data.filepath)))
-libPath = os.path.join(rootPath, "../lib")
-sys.path.insert(0, libPath)
+# Get the path to the current Blender file
+blend_file_path = bpy.data.filepath
+
+# Construct the path to the libs directory
+lib_path = os.path.join(os.path.dirname(blend_file_path), "libs")
+
+# Add the libs directory to the system path
+sys.path.append(lib_path)
 
 from BlenderStuff import BlenderStuff
 from LSystem3D import LSystem3D
@@ -121,7 +166,7 @@ LSys.rotate_around_H(45)
 #Draw a equilateral triangle
 LSys._code = "F&F&F"
 
-LSys.calculatePoints()  
+LSys.calculatePoints()
 LSys.printVectorlist()
 listOfVectors = LSys.getVectorList()
 

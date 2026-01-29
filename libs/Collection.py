@@ -25,13 +25,13 @@ class Collection:
         # Clean Up orphaned Meshes !! Important sont wird die Datei immer größer
         for m in bpy.data.meshes:
             found = False
-            
+
             # search in all Collections
             for collection in bpy.data.collections:
                 for obj in collection.all_objects:
                     # jedes objekt hat auch ein Mesh Data mit Namen
                     if obj.data:
-                        #print("obj: ", obj.data.name)
+                        # print("obj: ", obj.data.name)
                         if obj.data.name == m.name:
                             found = True
                             break
@@ -78,10 +78,10 @@ class Collection:
         return bpy.contex.scene.collection
 
     def selectAllInCollection(self, name):
-        """ select all Objects within a collection """
+        """select all Objects within a collection"""
         for obj in bpy.data.collections[name].all_objects:
             obj.select_set(True)
 
     def setActiveCollection(self, name):
-      """ set the active used collection """
-      bpy.context.view_layer.active_layer_collection = bpy.context.view_layer.layer_collection.children[name]
+        """set the active used collection"""
+        bpy.context.view_layer.active_layer_collection = bpy.context.view_layer.layer_collection.children[name]
