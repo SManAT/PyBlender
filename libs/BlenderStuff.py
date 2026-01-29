@@ -27,15 +27,15 @@ class BlenderStuff:
 
         self._object = Object()
         self._collection = Collection()
-        
+
         self.show_system_console()
 
-    def show_system_console():
-      """ Show up the System Console """
-      # Check if the system console is visible
-      for area in bpy.context.screen.areas:
-          if area.type != 'CONSOLE':
-              bpy.ops.wm.console_toggle()
+    def show_system_console(self):
+        """Show up the System Console"""
+        # Check if the system console is visible
+        for area in bpy.context.screen.areas:
+            if area.type != "CONSOLE":
+                bpy.ops.wm.console_toggle()
 
     def MakePolyLine(self, objname, curvename, cList, coll):
         """
@@ -45,14 +45,14 @@ class BlenderStuff:
         # weight
         w = 1
         # 'POLY', 'BEZIER', 'BSPLINE', 'CARDINAL', 'NURBS'
-        curvedata = self._D.curves.new(name=curvename, type='CURVE')
-        curvedata.dimensions = '3D'
+        curvedata = self._D.curves.new(name=curvename, type="CURVE")
+        curvedata.dimensions = "3D"
 
         objectdata = self._D.objects.new(objname, curvedata)
         # object origin
         objectdata.location = (0, 0, 0)
 
-        polyline = curvedata.splines.new('POLY')
+        polyline = curvedata.splines.new("POLY")
         polyline.points.add(len(cList) - 1)
         for num in range(len(cList)):
             x, y, z = cList[num]

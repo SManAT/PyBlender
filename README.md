@@ -49,7 +49,7 @@ libs/
 ├─ Library.py
 ```
 
-With this structure you can do something like that
+With this structure you can do something like that.
 
 ```python
 import bpy
@@ -68,6 +68,11 @@ sys.path.append(lib_path)
 import Library
 ```
 
+# System Console for python
+
+On Windows use Menu -> Window -> Toggle System Console.  
+On Linux, just start blender from CLI.
+
 # Basic Example
 
 ```
@@ -83,7 +88,8 @@ blend_file_path = bpy.data.filepath
 lib_path = os.path.join(os.path.dirname(blend_file_path), "libs")
 
 # Add the libs directory to the system path
-sys.path.append(lib_path)
+if lib_path not in sys.path:
+    sys.path.append(lib_path)
 
 from Collection import Collection
 from BlenderStuff import BlenderStuff
@@ -98,12 +104,19 @@ D = bpy.data
 # Main Program =================================================================
 output_collection = "Output"
 BStuff = BlenderStuff()
+
 _Collection = Collection()
 _Object = Object()
 # delete if exists and create it new
 _Collection.create_Collection(output_collection)
+_Collection.setActiveCollection(output_collection)
+
 
 """Main Entry Point"""
+# Say you have an Mesh MyCube
+new_ob = _Object.duplicate("MyCube")
+_Collection.add_to_Collection(new_ob, output_collection)
+selected_ob = _Object.selectObjectByName(new_ob.name)
 
 # 2Do
 
