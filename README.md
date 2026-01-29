@@ -12,8 +12,7 @@ import sys
 sys.exec_prefix
 ```
 
-Maybe that is _C:\Program Files\Blender Foundation\Blender 2.82\2.82\python_.
-If you want to use another Version of Python, just delete this folder.
+Maybe that is _C:\Program Files\Blender Foundation\Blender 2.82\2.82\python_, or similar to your blender version.
 
 **Using pip**
 Change within a terminal to the python path. Then you can use (Win)
