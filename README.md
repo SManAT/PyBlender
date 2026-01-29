@@ -52,6 +52,9 @@ libs/
 With this structure you can do something like that
 
 ```python
+import bpy
+import os
+import sys
 # Get the path to the current Blender file
 blend_file_path = bpy.data.filepath
 
